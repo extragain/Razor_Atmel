@@ -26,6 +26,68 @@ Global variable definitions with scope limited to this local application.
 Variable names shall start with "Main_" and be declared as static.
 ***********************************************************************************************************************/
 
+/* 2. Write a type definition for an enumerated (enum) type called TestType with the 
+      values, TEST_PASS, TEST_FAIL, and TEST_EMPTY. */
+typedef enum {TEST_PASS = 0; TEST_FAIL; TEST_EMPTY} TestType;
+
+/* 7. Write a typedef for a struct called TestStructType with the following members:
+      - Unsigned 8-bit Count
+      - Pointer to another TestStructType */
+typedef struct
+{
+    UCHAR Count;
+    TestStructType * pstTst;
+}TestStructType
+
+void C_Level_test(void)
+{
+    /* 1. Declare four variables: */
+    /* a. signed and unsigned 8-bit counters initialized to 0 */
+    CHAR ucExA = 0;
+    UCHAR ucExB = 0;
+
+    /* b. unsigned, uninitialized 32-bit counter */
+    LONG lExc = 0;
+    ULONG  ulExd = 0;
+
+    /* c. boolean (bool) status variable initialized to FALSE. */
+    BOOL bExe = FALSE;
+
+    /* 3. Declare an uninitialized 10 byte array of unsigned 8-bit numbers. Then set the 4th element 
+          to the value 5 and the last element to the value 500. */
+    UCHAR ucExArray[10] = {0};
+
+    /* 4. Write a loop to set all elements of u8ExampleArray[] to 0. You do not have any 
+          information about the array¡¯s declaration. */
+    for(iloop=0; iloop<sizeof(u8ExampleArray); iloop++)
+    {
+        u8ExampleArray[iloop] = 0;
+    }
+
+    /* 5. Declare a C-string ¡°HELLO EIE¡±. What is the size of this array in bytes? */
+    UCHAR ucSrArray[] = "HELLO EIE";
+
+    /* 6. Use a pointer to parse the unknown string au8String[] and count the number of times the letter ¡®E¡¯ appears. */
+    UCHAR * ucpExucp = au8String;
+
+    for(iloop=0; iloop<sizeof(au8String); iloop++)
+    {
+        if('E' == (* ucpExucp))
+        {
+        }
+
+        ucpExucp++;
+    }
+
+    /* 8. Create two variables of type TestStructType. Initialize the first Count member 
+          to 1 and the second Count member to 2. Initialize the first TestStructType member 
+          pointer to point at the second struct. Initialize the second TestStructType member to NULL. */
+    TestStructType stExsta, stExstb;
+
+    stExsta.Count = 1;
+
+    stExstb.Count = 2;
+}
 
 /***********************************************************************************************************************
 Main Program
@@ -103,6 +165,9 @@ void main(void)
     //BoardTestRunActiveState();
     //AudioTestRunActiveState();
     UserAppRunActiveState();
+
+    // c level test
+    C_Level_test();
     
     /* System sleep*/
     HEARTBEAT_OFF();
