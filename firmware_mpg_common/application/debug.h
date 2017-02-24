@@ -50,7 +50,7 @@ typedef struct
 00 - 99.  Command name string is a maximum of DEBUG_CMD_NAME_LENGTH characters. */
 
 #ifdef MPGL1
-#define DEBUG_COMMANDS          9   /* Total number of debug commands */
+#define DEBUG_COMMANDS          12   /* Total number of debug commands */
 /*                              "0123456789ABCDEF0123456789ABCDEF"  Character position reference */
 #define DEBUG_CMD_NAME00        "Show debug command list         "  /* Command 0: List all commands */
 #define DEBUG_CMD_NAME01        "Toggle LED test                 "  /* Command 1: Test that allows characters to toggle LEDs */

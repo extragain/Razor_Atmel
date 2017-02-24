@@ -1,0 +1,269 @@
+###############################################################################
+#
+# IAR ANSI C/C++ Compiler V7.20.1.7305/W32 for ARM        25/Feb/2017  01:59:20
+# Copyright 1999-2014 IAR Systems AB.
+#
+#    Cpu mode     =  thumb
+#    Endian       =  little
+#    Source file  =  
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\application\efashion_app.c
+#    Command line =  
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\application\efashion_app.c
+#        --preprocess=cl
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\Debug\List\
+#        -lC
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\Debug\List\
+#        -o
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\Debug\Obj\
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa
+#        --no_clustering --no_scheduling --debug --endian=little
+#        --cpu=Cortex-M3 -e --fpu=None --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench
+#        7.0\arm\INC\c\DLib_Config_Normal.h" -I
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\
+#        -I
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\..\bsp\
+#        -I
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\..\drivers\
+#        -I
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\..\application\
+#        -I
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\..\..\firmware_mpg_common\
+#        -I
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\..\..\firmware_mpg_common\application\
+#        -I
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\..\..\firmware_mpg_common\cmsis\
+#        -I
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\..\..\firmware_mpg_common\drivers\
+#        -On --use_c++_inline -I "C:\Program Files (x86)\IAR Systems\Embedded
+#        Workbench 7.0\arm\CMSIS\Include\"
+#    List file    =  
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\Debug\List\efashion_app.lst
+#    Object file  =  
+#        D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\iar_7_20_1\Debug\Obj\efashion_app.o
+#
+###############################################################################
+
+D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\application\efashion_app.c
+      1          /**********************************************************************************************************************
+      2          File: efashion_app.c                                                                
+      3          
+      4          ----------------------------------------------------------------------------------------------------------------------
+      5          ----------------------------------------------------------------------------------------------------------------------
+      6          
+      7          Description:
+      8          This is a efashion_app.c file, used to code the efashion product. 
+      9          
+     10          ------------------------------------------------------------------------------------------------------------------------
+     11          API:
+     12          
+     13          Public functions:
+     14          
+     15          
+     16          Protected System functions:
+     17          void EfashionAppInitialize(void)
+     18          Runs required initialzation for the task.  Should only be called once in main init section.
+     19          
+     20          void EfashionAppRunActiveState(void)
+     21          Runs current task state.  Should only be called once in main loop.
+     22          
+     23          
+     24          **********************************************************************************************************************/
+     25          
+     26          #include "configuration.h"
+     27          
+     28          /***********************************************************************************************************************
+     29          Global variable definitions with scope across entire project.
+     30          All Global variable names shall start with "G_"
+     31          ***********************************************************************************************************************/
+     32          /* New variables */
+
+   \                                 In section .bss, align 4
+     33          volatile u32 G_u32EfashionAppFlags;                    /* Global state flags */
+   \                     G_u32EfashionAppFlags:
+   \   00000000                      DS8 4
+     34          
+     35          
+     36          /*--------------------------------------------------------------------------------------------------------------------*/
+     37          /* Existing variables (defined in other files -- should all contain the "extern" keyword) */
+     38          extern volatile u32 G_u32SystemFlags;                  /* From main.c */
+     39          extern volatile u32 G_u32ApplicationFlags;             /* From main.c */
+     40          
+     41          extern volatile u32 G_u32SystemTime1ms;                /* From board-specific source file */
+     42          extern volatile u32 G_u32SystemTime1s;                 /* From board-specific source file */
+     43          
+     44          
+     45          /***********************************************************************************************************************
+     46          Global variable definitions with scope limited to this local application.
+     47          Variable names shall start with "EfashionApp_" and be declared as static.
+     48          ***********************************************************************************************************************/
+
+   \                                 In section .bss, align 4
+     49          static fnCode_type EfashionApp_StateMachine;        /* The state machine function pointer */
+   \                     EfashionApp_StateMachine:
+   \   00000000                      DS8 4
+     50          static u32 EfashionApp_u32Timeout;                  /* Timeout counter used across states */
+     51          
+     52          
+     53          /**********************************************************************************************************************
+     54          Function Definitions
+     55          **********************************************************************************************************************/
+     56          
+     57          /*--------------------------------------------------------------------------------------------------------------------*/
+     58          /* Public functions                                                                                                   */
+     59          /*--------------------------------------------------------------------------------------------------------------------*/
+     60          
+     61          
+     62          /*--------------------------------------------------------------------------------------------------------------------*/
+     63          /* Protected functions                                                                                                */
+     64          /*--------------------------------------------------------------------------------------------------------------------*/
+     65          
+     66          /*--------------------------------------------------------------------------------------------------------------------
+     67          Function: EfashionAppInitialize
+     68          
+     69          Description:
+     70          Initializes the State Machine and its variables.
+     71          
+     72          Requires:
+     73            -
+     74          
+     75          Promises:
+     76            - 
+     77          */
+
+   \                                 In section .text, align 2, keep-with-next
+     78          void EfashionAppInitialize(void)
+     79          {
+     80          
+     81            /* If good initialization, set state to Idle */
+     82            if( 1 /* Add condition for good init */)
+     83            {
+     84              EfashionApp_StateMachine = EfashionAppSM_Idle;
+   \                     EfashionAppInitialize: (+1)
+   \   00000000   0x.... 0x....      ADR.W    R0,EfashionAppSM_Idle
+   \   00000004   0x....             LDR.N    R1,??DataTable1
+   \   00000006   0x6008             STR      R0,[R1, #+0]
+     85            }
+     86            else
+     87            {
+     88              /* The task isn't properly initialized, so shut it down and don't run */
+     89              EfashionApp_StateMachine = EfashionAppSM_FailedInit;
+     90            }
+     91          
+     92          } /* end EfashionAppInitialize() */
+   \   00000008   0x4770             BX       LR               ;; return
+     93          
+     94          
+     95          /*----------------------------------------------------------------------------------------------------------------------
+     96          Function EfashionAppRunActiveState()
+     97          
+     98          Description:
+     99          Selects and runs one iteration of the current state in the state machine.
+    100          All state machines have a TOTAL of 1ms to execute, so on average n state machines
+    101          may take 1ms / n to execute.
+    102          
+    103          Requires:
+    104            - State machine function pointer points at current state
+    105          
+    106          Promises:
+    107            - Calls the function to pointed by the state machine function pointer
+    108          */
+
+   \                                 In section .text, align 2, keep-with-next
+    109          void EfashionAppRunActiveState(void)
+    110          {
+   \                     EfashionAppRunActiveState: (+1)
+   \   00000000   0xB580             PUSH     {R7,LR}
+    111            EfashionApp_StateMachine();
+   \   00000002   0x....             LDR.N    R0,??DataTable1
+   \   00000004   0x6800             LDR      R0,[R0, #+0]
+   \   00000006   0x4780             BLX      R0
+    112          
+    113          } /* end EfashionAppRunActiveState */
+   \   00000008   0xBD01             POP      {R0,PC}          ;; return
+    114          
+    115          
+    116          /*--------------------------------------------------------------------------------------------------------------------*/
+    117          /* Private functions                                                                                                  */
+    118          /*--------------------------------------------------------------------------------------------------------------------*/
+    119          
+    120          
+    121          /**********************************************************************************************************************
+    122          State Machine Function Definitions
+    123          **********************************************************************************************************************/
+    124          
+    125          /*-------------------------------------------------------------------------------------------------------------------*/
+    126          /* Wait for a message to be queued */
+
+   \                                 In section .text, align 4, keep-with-next
+    127          static void EfashionAppSM_Idle(void)
+    128          {
+    129          
+    130          } /* end EfashionAppSM_Idle() */
+   \                     EfashionAppSM_Idle: (+1)
+   \   00000000   0x4770             BX       LR               ;; return
+
+   \                                 In section .text, align 4, keep-with-next
+   \                     ??DataTable1:
+   \   00000000   0x........         DC32     EfashionApp_StateMachine
+    131          
+    132          
+    133          /*-------------------------------------------------------------------------------------------------------------------*/
+    134          /* Handle an error */
+    135          static void EfashionAppSM_Error(void)          
+                             ^
+Warning[Pe177]: function "EfashionAppSM_Error" was declared but never
+          referenced
+
+  static u32 EfashionApp_u32Timeout;                  /* Timeout counter used across states */
+             ^
+"D:\001.EIE\资料\固件\Razor_Atmel\Razor_Atmel\firmware_mpgl1\application\efashion_app.c",50  Warning[Pe177]: 
+          variable "EfashionApp_u32Timeout" was declared but never referenced
+    136          {
+    137            EfashionApp_StateMachine = EfashionAppSM_Idle;
+    138            
+    139          } /* end EfashionAppSM_Error() */
+    140          
+    141          
+    142          /*-------------------------------------------------------------------------------------------------------------------*/
+    143          /* State to sit in if init failed */
+    144          static void EfashionAppSM_FailedInit(void)          
+    145          {
+    146              
+    147          } /* end EfashionAppSM_FailedInit() */
+    148          
+    149          
+    150          /*--------------------------------------------------------------------------------------------------------------------*/
+    151          /* End of File                                                                                                        */
+    152          /*--------------------------------------------------------------------------------------------------------------------*/
+
+   Maximum stack usage in bytes:
+
+   .cstack Function
+   ------- --------
+       0   EfashionAppInitialize
+       8   EfashionAppRunActiveState
+         8   -- Indirect call
+       0   EfashionAppSM_Idle
+
+
+   Section sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       4  ??DataTable1
+      10  EfashionAppInitialize
+      10  EfashionAppRunActiveState
+       2  EfashionAppSM_Idle
+       4  EfashionApp_StateMachine
+       4  G_u32EfashionAppFlags
+
+ 
+  8 bytes in section .bss
+ 26 bytes in section .text
+ 
+ 26 bytes of CODE memory
+  8 bytes of DATA memory
+
+Errors: none
+Warnings: 2

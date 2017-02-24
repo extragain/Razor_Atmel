@@ -80,6 +80,10 @@ void main(void)
   SystemStatusReport();
   G_u32SystemFlags &= ~_SYSTEM_INITIALIZING;
   
+#if PROGRAMMINGG_COMPETITION
+  LedAllOff();
+#endif
+  
   /* Super loop */  
   while(1)
   {
@@ -105,8 +109,8 @@ void main(void)
     //AudioTestRunActiveState();
     UserAppRunActiveState();
 	
-	// efashion task
-	EfashionAppRunActiveState();
+    // efashion task
+    //EfashionAppRunActiveState();
     
     /* System sleep*/
     HEARTBEAT_OFF();

@@ -60,6 +60,16 @@ Variable names shall start with "UserApp_" and be declared as static.
 static fnCode_type UserApp_StateMachine;            /* The state machine function pointer */
 static u32 UserApp_u32Timeout;                      /* Timeout counter used across states */
 
+#if PROGRAMMINGG_COMPETITION
+static u8  u8Counter  = 0;
+static u8  u8Configed = 0;
+//static u16 u16Counter = 0;
+static u16 u16Pwm     = 0;
+
+static LedContrlType    UserApp_LedContrlType[LED_NUM]    = LED_CONTRL_TYPE_INIT;
+static LedOnOffTimeType UserApp_LedOnOffTimeType[LED_NUM] = LED_ON_OFF_TIME_INIT;
+#endif
+
 
 /**********************************************************************************************************************
 Function Definitions
@@ -68,7 +78,31 @@ Function Definitions
 /*--------------------------------------------------------------------------------------------------------------------*/
 /* Public functions                                                                                                   */
 /*--------------------------------------------------------------------------------------------------------------------*/
+#if PROGRAMMINGG_COMPETITION
+/*--------------------------------------------------------------------------------------------------------------------
+Function: LedAllOff
 
+Description:
+All Led off
+
+Requires:
+  -
+
+Promises:
+  - 
+*/
+void LedAllOff(void)
+{
+  LedOff(WHITE);
+  LedOff(PURPLE);
+  LedOff(BLUE);
+  LedOff(CYAN);
+  LedOff(GREEN);
+  LedOff(YELLOW);
+  LedOff(ORANGE);
+  LedOff(RED);
+}
+#endif
 
 /*--------------------------------------------------------------------------------------------------------------------*/
 /* Protected functions                                                                                                */
@@ -137,8 +171,205 @@ State Machine Function Definitions
 /* Wait for a message to be queued */
 static void UserAppSM_Idle(void)
 {
-
+#if PROGRAMMINGG_COMPETITION
+  
+  u8 u8String[] = "You have not config your efashion ";
+  static u8  u8Mode;
+  
+  /*Key Value---Mode*/
+  u8Mode = UserAppSM_GetMode();
+  
+  /*config user data*/
+  UserAppSM_ConfigEfashion();
+  
+  /*Deal Every Mode*/
+  switch(u8Mode)
+  {
+  case DEMO:  
+    UserAppSM_DoDemoMode();
+    for(u8 u8Index=0; u8Index < LED_NUM; u8Index++)
+    {
+      UserApp_LedOnOffTimeType[u8Index].u32Counter = 0;
+    }
+    break;
+    
+  case USER:
+    if(0 == u8Configed)
+    {
+      DebugPrintf(u8String);
+    }
+    else
+    {
+      UserAppSM_DoUserMode();
+      u8Counter = 0;
+    }
+    break;
+    
+  case PAUSE:
+    break;
+    
+  case DARK:
+    for(u8 u8Index=0; u8Index < LED_NUM; u8Index++)
+    {
+      UserApp_LedContrlType[u8Index].u16PwmValue = 0;
+    }
+    break;
+    
+  }
+  
+  /*Led Action*/
+  for(u8 u8Index=0; u8Index < LED_NUM; u8Index++)
+  {
+    LedPWM(UserApp_LedContrlType[u8Index].u8Led, UserApp_LedContrlType[u8Index].u16PwmValue);
+  }
+ 
+#endif
 } /* end UserAppSM_Idle() */
+
+
+#if PROGRAMMINGG_COMPETITION
+/*-------------------------------------------------------------------------------------------------------------------*/
+/* UserAppSM_ConfigEfashion */
+static void UserAppSM_ConfigEfashion(void)
+{
+  ;//receive the cmd
+}
+
+
+/*-------------------------------------------------------------------------------------------------------------------*/
+/* UserAppSM_DoUserMode */
+static void UserAppSM_DoUserMode(void)
+{
+  for(u8 u8Index=0; u8Index < LED_NUM; u8Index++)
+  {
+    UserApp_LedOnOffTimeType[u8Index].u32Counter++;
+    
+    if(UserApp_LedOnOffTimeType[u8Index].u32Counter < UserApp_LedOnOffTimeType[u8Index].u32OnTime)
+    {
+      UserApp_LedContrlType[u8Index].u16PwmValue = 0;
+    }
+    else if(UserApp_LedOnOffTimeType[u8Index].u32Counter <= UserApp_LedOnOffTimeType[u8Index].u32OffTime)
+    {
+      UserApp_LedContrlType[u8Index].u16PwmValue = 100;
+    }
+    else
+    {
+      UserApp_LedOnOffTimeType[u8Index].u32Counter = 0;
+    }
+  }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------*/
+/* UserAppSM_DoDemoMode */
+static void UserAppSM_DoDemoMode(void)
+{
+  static u8  u8NextLed  = WHITE;
+  
+  u8Counter++;
+  if(u8NextLed == LED_NUM)
+  {
+    u8NextLed = 0;
+  }
+  else
+  {
+    if(0 == (u8Counter % 100))
+    {
+      u16Pwm += 10;
+
+      if(u16Pwm >= 100)
+      {
+        u16Pwm = 0;
+        u8NextLed++;
+      }
+    }
+  }
+  
+   /*Led Pwm Value*/
+  for(u8 u8Index=0; u8Index < LED_NUM; u8Index++)
+  {
+    if(u8Index == u8NextLed)
+    {
+      UserApp_LedContrlType[u8Index].u16PwmValue = u16Pwm;
+    }
+    else
+    {
+      UserApp_LedContrlType[u8Index].u16PwmValue = 0;
+    }
+  }
+}
+/*-------------------------------------------------------------------------------------------------------------------*/
+/* UserAppSM_GetMode */
+static u8 UserAppSM_GetMode(void)
+{
+  u8  u8Mode;
+  u8  u8Verify = 0;
+  static u8 u8ModePre  = DEMO;
+  static u8 u8ModePre2 = DEMO;
+  static u8 u8Button2Flag = 0; 
+  static u8 u8Button3Flag = 0;
+   
+  /*DEMO*/
+  if(IsButtonPressed(BUTTON0))
+  {
+    u8Verify++;
+    u8Mode = DEMO;
+    u8ModePre = u8Mode;
+  }
+  
+  /*USER*/
+  if(IsButtonPressed(BUTTON1))
+  {
+    u8Verify++;
+    u8Mode = USER;
+    u8ModePre = u8Mode;
+  }
+     
+  /*PAUSE*/
+  if(IsButtonPressed(BUTTON2))
+  {
+      u8Verify++;
+      u8Button2Flag++;
+      if(1 == u8Button2Flag)      /*BUTTON3 is Fist time to press*/
+      {
+        u8Mode = PAUSE;
+      }
+      else if(2 == u8Button2Flag) /*BUTTON3 is second time to press*/
+      {
+        u8Button2Flag = 0;
+        u8Mode = u8ModePre;
+      }
+  }
+  
+  /*DARK*/
+  if(IsButtonPressed(BUTTON3))
+  {
+    if(0 == u8Button2Flag)        /*if the mode is PAUSE, button4 is not used*/
+    {
+      u8Verify++;
+      u8Button3Flag++;
+      
+      if(1 == u8Button3Flag)      /*BUTTON3 is Fist time to press*/
+      {
+        u8Mode = PAUSE;
+      }
+      else if(2 == u8Button3Flag) /*BUTTON3 is second time to press*/
+      {
+        u8Button3Flag = 0;
+        u8Mode = u8ModePre;
+      }
+    }
+  }
+  
+  if(u8Verify > 1)
+  {
+    u8Mode = u8ModePre2;          /*error*/
+  }
+  
+  u8ModePre2 = u8Mode;
+  
+  return u8Mode;
+}
+#endif
 
 
 /*-------------------------------------------------------------------------------------------------------------------*/
