@@ -72,7 +72,8 @@ DebugCommandType Debug_au8Commands[DEBUG_COMMANDS] = { {DEBUG_CMD_NAME00, DebugC
                                                        {DEBUG_CMD_NAME04, DebugCommandDummy},
                                                        {DEBUG_CMD_NAME05, DebugCommandDummy},
                                                        {DEBUG_CMD_NAME06, DebugCommandDummy},
-                                                       {DEBUG_CMD_NAME07, DebugCommandDummy} 
+                                                       {DEBUG_CMD_NAME07, DebugCommandDummy},
+                                                       {DEBUG_CMD_NAME08, DebugCommandDummy}
                                                      };
 
 static bool Debug_bLedTestActive = TRUE;
@@ -454,6 +455,34 @@ static void DebugCommandDummy(void)
   
   DebugPrintf(au8DummyCommand);
   
+} /* end DebugCommandDummy() */
+
+
+/*----------------------------------------------------------------------------------------------------------------------
+Function: DebugCommandDummy
+
+Description:
+A command place-holder.
+*/
+static void DebugCommandEfashionStart(void)
+{
+  u8 au8DummyCommand[] = "\n\rEfashion task started!\n\n\r";
+
+  u8 au8MessageON[]	= MESSAGE_ON;			 /* Common "ON" message */
+  u8 au8MessageOFF[]	= MESSAGE_OFF;			 /* Common "OFF" message */
+
+  DebugPrintf(au8DummyCommand);
+
+  if(G_u32DebugFlags & _DEBUG_EFASHION_TASK_STARTED)
+  {
+    G_u32DebugFlags &= ~_DEBUG_EFASHION_TASK_STARTED;
+    DebugPrintf(G_au8MessageOFF);
+  }
+  else
+  {
+    G_u32DebugFlags |= _DEBUG_EFASHION_TASK_STARTED;
+    DebugPrintf(G_au8MessageON);
+  }
 } /* end DebugCommandDummy() */
 
 

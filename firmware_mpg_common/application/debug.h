@@ -15,6 +15,7 @@ File: debug.h
 /* G_u32DebugFlags */
 #define _DEBUG_LED_TEST_ENABLE         (u32)0x00000001      /* Flag if LED test is enabled */
 #define _DEBUG_TIME_WARNING_ENABLE     (u32)0x00000001      /* Flag if system time check is enabled */
+#define _DEBUG_EFASHION_TASK_STARTED   (u32)0x00000002      /* Flag if efashion task is started */
 
 #ifdef MPGL1 /* MPGL1-specific G_u32DebugFlags flags */
 #endif /* MPGL1 */
@@ -49,7 +50,7 @@ typedef struct
 00 - 99.  Command name string is a maximum of DEBUG_CMD_NAME_LENGTH characters. */
 
 #ifdef MPGL1
-#define DEBUG_COMMANDS          8   /* Total number of debug commands */
+#define DEBUG_COMMANDS          9   /* Total number of debug commands */
 /*                              "0123456789ABCDEF0123456789ABCDEF"  Character position reference */
 #define DEBUG_CMD_NAME00        "Show debug command list         "  /* Command 0: List all commands */
 #define DEBUG_CMD_NAME01        "Toggle LED test                 "  /* Command 1: Test that allows characters to toggle LEDs */
@@ -59,6 +60,7 @@ typedef struct
 #define DEBUG_CMD_NAME05        "Dummy5                          "  /* Command 5: */
 #define DEBUG_CMD_NAME06        "Dummy6                          "  /* Command 6: */
 #define DEBUG_CMD_NAME07        "Dummy7                          "  /* Command 7: */
+#define DEBUG_CMD_NAME08        "Efashion show"                     /* Command 8: Efashion task entry */
 #endif /* MPGL1 */
 
 #ifdef MPGL2
