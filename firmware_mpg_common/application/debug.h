@@ -60,7 +60,10 @@ typedef struct
 #define DEBUG_CMD_NAME05        "Dummy5                          "  /* Command 5: */
 #define DEBUG_CMD_NAME06        "Dummy6                          "  /* Command 6: */
 #define DEBUG_CMD_NAME07        "Dummy7                          "  /* Command 7: */
-#define DEBUG_CMD_NAME08        "Efashion show"                     /* Command 8: Efashion task entry */
+#define DEBUG_CMD_NAME08        "Efashion start"                    /* Command 8: start Efashion task */
+#define DEBUG_CMD_NAME09        "Efashion stop"                     /* Command 9: stop Efashion task */
+#define DEBUG_CMD_NAME10        "Efashion show sequence"            /* Command 10: show Efashion task sequence */
+#define DEBUG_CMD_NAME11        "Efashion code sequence"            /* Command 11: code Efashion task sequence */
 #endif /* MPGL1 */
 
 #ifdef MPGL2

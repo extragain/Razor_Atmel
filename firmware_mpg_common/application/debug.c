@@ -73,7 +73,10 @@ DebugCommandType Debug_au8Commands[DEBUG_COMMANDS] = { {DEBUG_CMD_NAME00, DebugC
                                                        {DEBUG_CMD_NAME05, DebugCommandDummy},
                                                        {DEBUG_CMD_NAME06, DebugCommandDummy},
                                                        {DEBUG_CMD_NAME07, DebugCommandDummy},
-                                                       {DEBUG_CMD_NAME08, DebugCommandDummy}
+                                                       {DEBUG_CMD_NAME08, DebugCommandDummy},
+                                                       {DEBUG_CMD_NAME09, DebugCommandDummy},
+                                                       {DEBUG_CMD_NAME10, DebugCommandDummy},
+                                                       {DEBUG_CMD_NAME11, DebugCommandDummy}
                                                      };
 
 static bool Debug_bLedTestActive = TRUE;
@@ -459,19 +462,19 @@ static void DebugCommandDummy(void)
 
 
 /*----------------------------------------------------------------------------------------------------------------------
-Function: DebugCommandDummy
+Function: DebugCommandEfashionStart
 
 Description:
-A command place-holder.
+A command to start efashion task.
 */
 static void DebugCommandEfashionStart(void)
 {
-  u8 au8DummyCommand[] = "\n\rEfashion task started!\n\n\r";
+  u8 au8EfashionStartCommand[] = "\n\rEfashion task started!\n\n\r";
 
   u8 au8MessageON[]	= MESSAGE_ON;			 /* Common "ON" message */
-  u8 au8MessageOFF[]	= MESSAGE_OFF;			 /* Common "OFF" message */
+  u8 au8MessageOFF[]= MESSAGE_OFF;			 /* Common "OFF" message */
 
-  DebugPrintf(au8DummyCommand);
+  DebugPrintf(au8EfashionStartCommand);
 
   if(G_u32DebugFlags & _DEBUG_EFASHION_TASK_STARTED)
   {
@@ -483,7 +486,49 @@ static void DebugCommandEfashionStart(void)
     G_u32DebugFlags |= _DEBUG_EFASHION_TASK_STARTED;
     DebugPrintf(G_au8MessageON);
   }
-} /* end DebugCommandDummy() */
+} /* end DebugCommandEfashionStart() */
+
+
+/*----------------------------------------------------------------------------------------------------------------------
+Function: DebugCommandEfashionStop
+
+Description:
+A command to stop efashion task.
+*/
+static void DebugCommandEfashionStop(void)
+{
+  u8 au8EfashionStopCommand[] = "\n\rEfashion task stopped!\n\n\r";
+
+  DebugPrintf(au8EfashionStopCommand);
+} /* end DebugCommandEfashionStop() */
+
+
+/*----------------------------------------------------------------------------------------------------------------------
+Function: DebugCommandEfashionShow
+
+Description:
+A command to show current efashion task sequence.
+*/
+static void DebugCommandEfashionShow(void)
+{
+  u8 au8EfashionShowCommand[] = "\n\rShow current efashion task sequence!\n\n\r";
+
+  DebugPrintf(au8EfashionShowCommand);
+} /* end DebugCommandEfashionShow() */
+
+
+/*----------------------------------------------------------------------------------------------------------------------
+Function: DebugCommandEfashionCode
+
+Description:
+A command to code efashion task sequence.
+*/
+static void DebugCommandEfashionCode(void)
+{
+  u8 au8EfashionCodeCommand[] = "\n\rCode user efashion task sequence!\n\n\r";
+
+  DebugPrintf(au8EfashionCodeCommand);
+} /* end DebugCommandEfashionCode() */
 
 
 /*----------------------------------------------------------------------------------------------------------------------
