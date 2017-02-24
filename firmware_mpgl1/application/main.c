@@ -74,6 +74,7 @@ void main(void)
 //  BoardTestInitialize();
 //  AudioTestInitialize();
     UserAppInitialize();
+    EfashionAppInitialize();
   
   /* Exit initialization */
   SystemStatusReport();
@@ -104,7 +105,8 @@ void main(void)
     //AudioTestRunActiveState();
     UserAppRunActiveState();
 	
-	//
+	// efashion task
+	EfashionAppRunActiveState();
     
     /* System sleep*/
     HEARTBEAT_OFF();
